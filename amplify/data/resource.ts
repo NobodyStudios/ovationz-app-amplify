@@ -1,15 +1,50 @@
 import { type ClientSchema, a, defineData } from "@aws-amplify/backend";
 
 /*== STEP 1 ===============================================================
-The section below creates a Todo database table with a "content" field. Try
-adding a new "isDone" field as a boolean. The authorization rule below
-specifies that any user authenticated via an API key can "create", "read",
-"update", and "delete" any "Todo" records.
+The section below creates a database schema. Modify as needed.
 =========================================================================*/
 const schema = a.schema({
-  Todo: a
+  StaticPage: a
     .model({
+      title: a.string(),
       content: a.string(),
+      version: a.integer(),
+    })
+    .authorization((allow) => [allow.publicApiKey()]),
+  SpeakerSeries: a
+    .model({
+      title: a.string(),
+      description: a.string(),
+      duration: a.string(),
+      numberOfSpeakers: a.integer(),
+      topicsCovered: a.string(),
+    })
+    .authorization((allow) => [allow.publicApiKey()]),
+  User: a
+    .model({
+      name: a.string(),
+      role: a.string(), // 'organizer' or 'talent'
+    })
+    .authorization((allow) => [allow.publicApiKey()]),
+  Event: a
+    .model({
+      title: a.string(),
+      date: a.string(),
+      time: a.string(),
+      description: a.string(),
+      materials: a.string(), // URL to uploaded materials
+      organizerId: a.string(),
+    })
+    .authorization((allow) => [allow.publicApiKey()]),
+  TalentProfile: a
+    .model({
+      biography: a.string(),
+      expertise: a.string(),
+      contactInfo: a.string(),
+      availability: a.string(), // JSON string of available dates
+      pricing: a.string(), // JSON string of pricing details
+      media: a.string(), // URL to uploaded media
+      userId: a.string(),
     })
     .authorization((allow) => [allow.publicApiKey()]),
 });
@@ -51,6 +86,6 @@ Fetch records from the database and use them in your frontend component.
 
 /* For example, in a React component, you can use this snippet in your
   function's RETURN statement */
-// const { data: todos } = await client.models.Todo.list()
+// const { data: records } = await client.models.StaticPage.list()
 
-// return <ul>{todos.map(todo => <li key={todo.id}>{todo.content}</li>)}</ul>
+// return <ul>{records.map(record => <li key={record.id}>{record.title}</li>)}</ul>
